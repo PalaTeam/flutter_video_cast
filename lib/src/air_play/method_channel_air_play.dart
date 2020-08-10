@@ -20,7 +20,7 @@ class MethodChannelAirPlay extends AirPlayPlatform {
   Future<void> init(int id) {
     MethodChannel channel;
     if (!_channels.containsKey(id)) {
-      channel = MethodChannel('plugins.flutter.io/multiPlayer/airPlay_$id');
+      channel = MethodChannel('flutter_video_cast/airPlay_$id');
       channel.setMethodCallHandler((call) => _handleMethodCall(call, id));
       _channels[id] = channel;
     }

@@ -43,7 +43,7 @@ class _MultiPlayerExampleState extends State<MultiPlayerExample> {
           ChromeCastButton(
             size: MultiPlayerExample._iconSize,
             color: Colors.white,
-            onButtonCreated: (controller) => _controller = controller,
+            onButtonCreated: _onButtonCreated,
             onSessionStarted: _onSessionStarted,
             onSessionEnded: () => setState(() => _state = AppState.idle),
             onRequestCompleted: _onRequestCompleted,
@@ -100,6 +100,11 @@ class _MultiPlayerExampleState extends State<MultiPlayerExample> {
       await _controller.play();
     }
     setState(() => _playing = !playing);
+  }
+
+  Future<void> _onButtonCreated(ChromeCastController controller) async {
+    _controller = controller;
+    await _controller.addSessionListener();
   }
 
   Future<void> _onSessionStarted() async {

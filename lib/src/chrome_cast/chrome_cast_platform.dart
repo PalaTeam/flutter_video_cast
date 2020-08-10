@@ -11,6 +11,14 @@ abstract class ChromeCastPlatform {
     throw UnimplementedError('init() has not been implemented.');
   }
 
+  Future<void> addSessionListener({@required int id}) {
+    throw UnimplementedError('addSessionListener() has not been implemented.');
+  }
+
+  Future<void> removeSessionListener({@required int id}) {
+    throw UnimplementedError('removeSessionListener() has not been implemented.');
+  }
+
   Stream<SessionStartedEvent> onSessionStarted({@required int id}) {
     throw UnimplementedError('onSessionStarted() has not been implemented.');
   }
@@ -41,6 +49,10 @@ abstract class ChromeCastPlatform {
 
   Future<void> seek(bool relative, double interval, {@required int id}) {
     throw UnimplementedError('pause() has not been implemented.');
+  }
+
+  Future<void> stop({@required int id}) {
+    throw UnimplementedError('stop() has not been implemented.');
   }
 
   Future<bool> isConnected({@required int id}) {

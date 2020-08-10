@@ -25,7 +25,7 @@ public class AirPlayController: NSObject, FlutterPlatformView {
         arguments args: Any?,
         registrar: FlutterPluginRegistrar
     ) {
-        self.channel = FlutterMethodChannel(name: "plugins.flutter.io/multiPlayer/airPlay_\(viewId)", binaryMessenger: registrar.messenger())
+        self.channel = FlutterMethodChannel(name: "flutter_video_cast/airPlay_\(viewId)", binaryMessenger: registrar.messenger())
         self.airPlayButton = AVRoutePickerView(frame: frame)
         super.init()
         self.configure(arguments: args)

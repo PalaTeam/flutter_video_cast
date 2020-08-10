@@ -19,7 +19,7 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
   Future<void> init(int id) {
     MethodChannel channel;
     if (!_channels.containsKey(id)) {
-      channel = MethodChannel('plugins.flutter.io/multiPlayer/chromeCast_$id');
+      channel = MethodChannel('flutter_video_cast/chromeCast_$id');
       channel.setMethodCallHandler((call) => _handleMethodCall(call, id));
       _channels[id] = channel;
     }
@@ -28,6 +28,16 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
 
   Stream<ChromeCastEvent> _events(int id) =>
       _eventStreamController.stream.where((event) => event.id == id);
+
+  @override
+  Future<void> addSessionListener({int id}) {
+    return channel(id).invokeMethod<void>('chromeCast#addSessionListener');
+  }
+
+  @override
+  Future<void> removeSessionListener({int id}) {
+    return channel(id).invokeMethod<void>('chromeCast#removeSessionListener');
+  }
 
   @override
   Stream<SessionStartedEvent> onSessionStarted({int id}) {
@@ -72,6 +82,11 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
       'interval' : interval
     };
     return channel(id).invokeMethod<void>('chromeCast#seek', args);
+  }
+
+  @override
+  Future<void> stop({int id}) {
+    return channel(id).invokeMethod<void>('chromeCast#stop');
   }
 
   @override

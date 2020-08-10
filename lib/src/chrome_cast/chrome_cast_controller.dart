@@ -13,6 +13,14 @@ class ChromeCastController {
     return ChromeCastController._(id: id);
   }
 
+  Future<void> addSessionListener() {
+    return _chromeCastPlatform.addSessionListener(id: id);
+  }
+
+  Future<void> removeSessionListener() {
+    return _chromeCastPlatform.removeSessionListener(id: id);
+  }
+
   Future<void> loadMedia(String url) {
     return _chromeCastPlatform.loadMedia(url, id: id);
   }
@@ -27,6 +35,10 @@ class ChromeCastController {
 
   Future<void> seek({bool relative = false, double interval = 10.0}) {
     return _chromeCastPlatform.seek(relative, interval, id: id);
+  }
+
+  Future<void> stop() {
+    return _chromeCastPlatform.stop(id: id);
   }
 
   Future<bool> isConnected() {

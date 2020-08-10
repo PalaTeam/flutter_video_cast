@@ -24,7 +24,7 @@ class ChromeCastController: NSObject, FlutterPlatformView {
         arguments args: Any?,
         registrar: FlutterPluginRegistrar
     ) {
-        self.channel = FlutterMethodChannel(name: "plugins.flutter.io/multiPlayer/chromeCast_\(viewId)", binaryMessenger: registrar.messenger())
+        self.channel = FlutterMethodChannel(name: "flutter_video_cast/chromeCast_\(viewId)", binaryMessenger: registrar.messenger())
         self.chromeCastButton = GCKUICastButton(frame: frame)
         super.init()
         self.configure(arguments: args)
@@ -35,7 +35,6 @@ class ChromeCastController: NSObject, FlutterPlatformView {
     }
 
     private func configure(arguments args: Any?) {
-        sessionManager.add(self)
         setTint(arguments: args)
         setMethodCallHandler()
     }
@@ -88,12 +87,23 @@ class ChromeCastController: NSObject, FlutterPlatformView {
         case "chromeCast#seek":
             seek(args: call.arguments)
             result(nil)
+            break
+        case "chromeCast#stop":
+            stop()
+            result(nil)
+            break
         case "chromeCast#isConnected":
             result(isConnected())
             break
         case "chromeCast#isPlaying":
             result(isPlaying())
             break
+        case "chromeCast#addSessionListener":
+            addSessionListener()
+            result(nil)
+        case "chromeCast#removeSessionListener":
+            removeSessionListener()
+            result(nil)
         default:
             result(nil)
             break
@@ -109,19 +119,19 @@ class ChromeCastController: NSObject, FlutterPlatformView {
                 return
         }
         let mediaInformation = GCKMediaInformationBuilder(contentURL: mediaUrl).build()
-        if let request = sessionManager.currentSession?.remoteMediaClient?.loadMedia(mediaInformation) {
+        if let request = sessionManager.currentCastSession?.remoteMediaClient?.loadMedia(mediaInformation) {
             request.delegate = self
         }
     }
 
     private func play() {
-        if let request = sessionManager.currentSession?.remoteMediaClient?.play() {
+        if let request = sessionManager.currentCastSession?.remoteMediaClient?.play() {
             request.delegate = self
         }
     }
 
     private func pause() {
-        if let request = sessionManager.currentSession?.remoteMediaClient?.pause() {
+        if let request = sessionManager.currentCastSession?.remoteMediaClient?.pause() {
             request.delegate = self
         }
     }
@@ -136,17 +146,31 @@ class ChromeCastController: NSObject, FlutterPlatformView {
         let seekOptions = GCKMediaSeekOptions()
         seekOptions.relative = relative
         seekOptions.interval = interval
-        if let request = sessionManager.currentSession?.remoteMediaClient?.seek(with: seekOptions) {
+        if let request = sessionManager.currentCastSession?.remoteMediaClient?.seek(with: seekOptions) {
+            request.delegate = self
+        }
+    }
+
+    private func stop() {
+        if let request = sessionManager.currentCastSession?.remoteMediaClient?.stop() {
             request.delegate = self
         }
     }
 
     private func isConnected() -> Bool {
-        return sessionManager.currentSession?.remoteMediaClient?.connected ?? false
+        return sessionManager.currentCastSession?.remoteMediaClient?.connected ?? false
     }
 
     private func isPlaying() -> Bool {
-        return sessionManager.currentSession?.remoteMediaClient?.mediaStatus?.playerState == GCKMediaPlayerState.playing
+        return sessionManager.currentCastSession?.remoteMediaClient?.mediaStatus?.playerState == GCKMediaPlayerState.playing
+    }
+
+    private func addSessionListener() {
+        sessionManager.add(self)
+    }
+
+    private func removeSessionListener() {
+        sessionManager.remove(self)
     }
 }
 

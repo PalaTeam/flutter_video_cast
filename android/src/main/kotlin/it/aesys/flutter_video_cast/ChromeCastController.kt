@@ -10,6 +10,8 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.Session
 import com.google.android.gms.cast.framework.SessionManagerListener
+import com.google.android.gms.common.api.PendingResult
+import com.google.android.gms.common.api.Status
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -19,15 +21,14 @@ class ChromeCastController(
         messenger: BinaryMessenger,
         viewId: Int,
         context: Context?
-) : PlatformView, MethodChannel.MethodCallHandler, SessionManagerListener<Session> {
-    private val channel = MethodChannel(messenger, "plugins.flutter.io/multiPlayer/chromeCast_$viewId")
+) : PlatformView, MethodChannel.MethodCallHandler, SessionManagerListener<Session>, PendingResult.StatusListener {
+    private val channel = MethodChannel(messenger, "flutter_video_cast/chromeCast_$viewId")
     private val chromeCastButton = MediaRouteButton(ContextThemeWrapper(context, R.style.Theme_AppCompat_NoActionBar))
     private val sessionManager = CastContext.getSharedInstance()?.sessionManager
 
     init {
         CastButtonFactory.setUpMediaRouteButton(context, chromeCastButton)
         channel.setMethodCallHandler(this)
-        sessionManager?.addSessionManagerListener(this)
     }
 
     private fun loadMedia(args: Any?) {
@@ -36,20 +37,18 @@ class ChromeCastController(
             val media = MediaInfo.Builder(url).build()
             val options = MediaLoadOptions.Builder().build()
             val request = sessionManager?.currentCastSession?.remoteMediaClient?.load(media, options)
-            request?.addStatusListener { status ->
-                if (status.isSuccess) {
-                    channel.invokeMethod("chromeCast#requestDidComplete", null)
-                }
-            }
+            request?.addStatusListener(this)
         }
     }
 
     private fun play() {
-        sessionManager?.currentCastSession?.remoteMediaClient?.play()
+        val request = sessionManager?.currentCastSession?.remoteMediaClient?.play()
+        request?.addStatusListener(this)
     }
 
     private fun pause() {
-        sessionManager?.currentCastSession?.remoteMediaClient?.pause()
+        val request = sessionManager?.currentCastSession?.remoteMediaClient?.pause()
+        request?.addStatusListener(this)
     }
 
     private fun seek(args: Any?) {
@@ -63,17 +62,35 @@ class ChromeCastController(
             val seekOptions = MediaSeekOptions.Builder()
                     .setPosition(interval?.toLong() ?: 0)
                     .build()
-            sessionManager?.currentCastSession?.remoteMediaClient?.seek(seekOptions)
+            val request = sessionManager?.currentCastSession?.remoteMediaClient?.seek(seekOptions)
+            request?.addStatusListener(this)
         }
     }
 
+    private fun stop() {
+        val request = sessionManager?.currentCastSession?.remoteMediaClient?.stop()
+        request?.addStatusListener(this)
+    }
+
     private fun isPlaying() = sessionManager?.currentCastSession?.remoteMediaClient?.isPlaying ?: false
+
+    private fun isConnected() = sessionManager?.currentCastSession?.isConnected ?: false
+
+    private fun addSessionListener() {
+        sessionManager?.addSessionManagerListener(this)
+    }
+
+    private fun removeSessionListener() {
+        sessionManager?.removeSessionManagerListener(this)
+    }
 
     override fun getView() = chromeCastButton
 
     override fun dispose() {
 
     }
+
+    // Flutter methods handling
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when(call.method) {
@@ -94,9 +111,24 @@ class ChromeCastController(
                 seek(call.arguments)
                 result.success(null)
             }
+            "chromeCast#stop" -> {
+                stop()
+                result.success(null)
+            }
             "chromeCast#isPlaying" -> result.success(isPlaying())
+            "chromeCast#isConnected" -> result.success(isConnected())
+            "chromeCast#addSessionListener" -> {
+                addSessionListener()
+                result.success(null)
+            }
+            "chromeCast#removeSessionListener" -> {
+                removeSessionListener()
+                result.success(null)
+            }
         }
     }
+
+    // SessionManagerListener
 
     override fun onSessionStarted(p0: Session?, p1: String?) {
         channel.invokeMethod("chromeCast#didStartSession", null)
@@ -132,5 +164,13 @@ class ChromeCastController(
 
     override fun onSessionStartFailed(p0: Session?, p1: Int) {
 
+    }
+
+    // PendingResult.StatusListener
+
+    override fun onComplete(status: Status?) {
+        if (status?.isSuccess == true) {
+            channel.invokeMethod("chromeCast#requestDidComplete", null)
+        }
     }
 }
