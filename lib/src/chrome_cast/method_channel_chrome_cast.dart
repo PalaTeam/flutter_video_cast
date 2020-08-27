@@ -40,7 +40,6 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
     return channel.invokeMethod<void>('chromeCast#wait');
   }
 
-
   @override
   Future<void> addSessionListener({int id}) {
     return channel(id).invokeMethod<void>('chromeCast#addSessionListener');
