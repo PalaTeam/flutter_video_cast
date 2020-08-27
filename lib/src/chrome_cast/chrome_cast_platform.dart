@@ -16,7 +16,8 @@ abstract class ChromeCastPlatform {
   }
 
   Future<void> removeSessionListener({@required int id}) {
-    throw UnimplementedError('removeSessionListener() has not been implemented.');
+    throw UnimplementedError(
+        'removeSessionListener() has not been implemented.');
   }
 
   Stream<SessionStartedEvent> onSessionStarted({@required int id}) {
@@ -35,7 +36,10 @@ abstract class ChromeCastPlatform {
     throw UnimplementedError('onSessionEnded() has not been implemented.');
   }
 
-  Future<void> loadMedia(String url, {@required int id, }) {
+  Future<void> loadMedia(
+    String url, {
+    @required int id,
+  }) {
     throw UnimplementedError('loadMedia() has not been implemented.');
   }
 
@@ -63,10 +67,8 @@ abstract class ChromeCastPlatform {
     throw UnimplementedError('isPlaying() has not been implemented.');
   }
 
-  Widget buildView(
-      Map<String, dynamic> arguments,
-      PlatformViewCreatedCallback onPlatformViewCreated
-      ) {
+  Widget buildView(Map<String, dynamic> arguments,
+      PlatformViewCreatedCallback onPlatformViewCreated) {
     throw UnimplementedError('buildView() has not been implemented.');
   }
 }

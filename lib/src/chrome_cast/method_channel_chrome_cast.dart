@@ -61,7 +61,7 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
 
   @override
   Future<void> loadMedia(String url, {@required int id}) {
-    final Map<String, dynamic> args = { 'url' : url };
+    final Map<String, dynamic> args = {'url': url};
     return channel(id).invokeMethod<void>('chromeCast#loadMedia', args);
   }
 
@@ -78,8 +78,8 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
   @override
   Future<void> seek(bool relative, double interval, {@required int id}) {
     final Map<String, dynamic> args = {
-      'relative' : relative,
-      'interval' : interval
+      'relative': relative,
+      'interval': interval
     };
     return channel(id).invokeMethod<void>('chromeCast#seek', args);
   }
@@ -111,10 +111,8 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
         _eventStreamController.add(RequestDidCompleteEvent(id));
         break;
       case 'chromeCast#requestDidFail':
-        _eventStreamController.add(RequestDidFailEvent(
-            id,
-            call.arguments['error']
-        ));
+        _eventStreamController
+            .add(RequestDidFailEvent(id, call.arguments['error']));
         break;
       default:
         throw MissingPluginException();
@@ -122,10 +120,8 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
   }
 
   @override
-  Widget buildView(
-      Map<String, dynamic> arguments,
-      PlatformViewCreatedCallback onPlatformViewCreated
-      ) {
+  Widget buildView(Map<String, dynamic> arguments,
+      PlatformViewCreatedCallback onPlatformViewCreated) {
     if (defaultTargetPlatform == TargetPlatform.android) {
       return AndroidView(
         viewType: 'ChromeCastButton',

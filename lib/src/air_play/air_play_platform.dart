@@ -19,10 +19,8 @@ abstract class AirPlayPlatform {
     throw UnimplementedError('onRoutesClosed() has not been implemented.');
   }
 
-  Widget buildView(
-      Map<String, dynamic> arguments,
-      PlatformViewCreatedCallback onPlatformViewCreated
-      ) {
+  Widget buildView(Map<String, dynamic> arguments,
+      PlatformViewCreatedCallback onPlatformViewCreated) {
     throw UnimplementedError('buildView() has not been implemented.');
   }
 }

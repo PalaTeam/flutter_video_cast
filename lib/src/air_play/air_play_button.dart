@@ -21,14 +21,14 @@ class AirPlayButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> args = {
-      'red' : color.red,
-      'green' : color.green,
-      'blue' : color.blue,
-      'alpha' : color.alpha,
-      'activeRed' : activeColor.red,
-      'activeGreen' : activeColor.green,
-      'activeBlue' : activeColor.blue,
-      'activeAlpha' : activeColor.alpha,
+      'red': color.red,
+      'green': color.green,
+      'blue': color.blue,
+      'alpha': color.alpha,
+      'activeRed': activeColor.red,
+      'activeGreen': activeColor.green,
+      'activeBlue': activeColor.blue,
+      'activeAlpha': activeColor.alpha,
     };
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       return SizedBox(
@@ -42,12 +42,10 @@ class AirPlayButton extends StatelessWidget {
 
   void _onPlatformViewCreated(int id) async {
     await _airPlayPlatform.init(id);
-    if(onRoutesOpening != null) {
-      _airPlayPlatform
-          .onRoutesOpening(id: id)
-          .listen((_) => onRoutesOpening());
+    if (onRoutesOpening != null) {
+      _airPlayPlatform.onRoutesOpening(id: id).listen((_) => onRoutesOpening());
     }
-    if(onRoutesClosed != null) {
+    if (onRoutesClosed != null) {
       _airPlayPlatform
           .onRoutesClosed(id: id)
           .listen((event) => onRoutesClosed());

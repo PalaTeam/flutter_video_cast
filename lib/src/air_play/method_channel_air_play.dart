@@ -8,7 +8,6 @@ import 'package:flutter_video_cast/src/air_play/air_play_platform.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 class MethodChannelAirPlay extends AirPlayPlatform {
-
   final Map<int, MethodChannel> _channels = {};
   final _eventStreamController = StreamController<AirPlayEvent>.broadcast();
 
@@ -54,10 +53,8 @@ class MethodChannelAirPlay extends AirPlayPlatform {
   }
 
   @override
-  Widget buildView(
-      Map<String, dynamic> arguments,
-      PlatformViewCreatedCallback onPlatformViewCreated
-      ) {
+  Widget buildView(Map<String, dynamic> arguments,
+      PlatformViewCreatedCallback onPlatformViewCreated) {
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       return UiKitView(
         viewType: 'AirPlayButton',

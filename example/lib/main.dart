@@ -2,27 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
 
 void main() {
-  runApp(Home());
+  runApp(MyApp());
 }
 
-class Home extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: MultiPlayerExample()
+        home: CastSample()
     );
   }
 }
 
-class MultiPlayerExample extends StatefulWidget {
+class CastSample extends StatefulWidget {
   static const _iconSize = 50.0;
 
   @override
-  _MultiPlayerExampleState createState() => _MultiPlayerExampleState();
+  _CastSampleState createState() => _CastSampleState();
 }
 
-class _MultiPlayerExampleState extends State<MultiPlayerExample> {
+class _CastSampleState extends State<CastSample> {
   ChromeCastController _controller;
   AppState _state = AppState.idle;
   bool _playing = false;
@@ -34,14 +33,14 @@ class _MultiPlayerExampleState extends State<MultiPlayerExample> {
         title: Text('Plugin example app'),
         actions: <Widget>[
           AirPlayButton(
-            size: MultiPlayerExample._iconSize,
+            size: CastSample._iconSize,
             color: Colors.white,
             activeColor: Colors.amber,
             onRoutesOpening: () => print('opening'),
             onRoutesClosed: () => print('closed'),
           ),
           ChromeCastButton(
-            size: MultiPlayerExample._iconSize,
+            size: CastSample._iconSize,
             color: Colors.white,
             onButtonCreated: _onButtonCreated,
             onSessionStarted: _onSessionStarted,
