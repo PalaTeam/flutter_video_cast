@@ -2,13 +2,9 @@ part of flutter_video_cast;
 
 final AirPlayPlatform _airPlayPlatform = AirPlayPlatform.instance;
 
+/// Widget that displays the AirPlay button.
 class AirPlayButton extends StatelessWidget {
-  final double size;
-  final Color color;
-  final Color activeColor;
-  final VoidCallback onRoutesOpening;
-  final VoidCallback onRoutesClosed;
-
+  /// Creates a widget displaying a AirPlay button.
   AirPlayButton({
     Key key,
     this.size = 30.0,
@@ -17,6 +13,21 @@ class AirPlayButton extends StatelessWidget {
     this.onRoutesOpening,
     this.onRoutesClosed,
   }) : super(key: key);
+
+  /// The size of the button.
+  final double size;
+
+  /// The color of the button.
+  final Color color;
+
+  /// The color of the button when connected.
+  final Color activeColor;
+
+  /// Called while the AirPlay popup is opening.
+  final VoidCallback onRoutesOpening;
+
+  /// Called when the AirPlay popup has closed.
+  final VoidCallback onRoutesClosed;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +51,7 @@ class AirPlayButton extends StatelessWidget {
     return SizedBox();
   }
 
-  void _onPlatformViewCreated(int id) async {
+  Future<void> _onPlatformViewCreated(int id) async {
     await _airPlayPlatform.init(id);
     if (onRoutesOpening != null) {
       _airPlayPlatform.onRoutesOpening(id: id).listen((_) => onRoutesOpening());

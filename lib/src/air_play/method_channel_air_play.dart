@@ -7,13 +7,27 @@ import 'package:flutter_video_cast/src/air_play/air_play_event.dart';
 import 'package:flutter_video_cast/src/air_play/air_play_platform.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+/// An implementation of [AirPlayPlatform] that uses [MethodChannel] to communicate with the native code.
 class MethodChannelAirPlay extends AirPlayPlatform {
+  // Keep a collection of id -> channel
+  // Every method call passes the int id
   final Map<int, MethodChannel> _channels = {};
-  final _eventStreamController = StreamController<AirPlayEvent>.broadcast();
 
+  /// Accesses the MethodChannel associated to the passed id.
   MethodChannel channel(int id) {
     return _channels[id];
   }
+
+  // The controller we need to broadcast the different events coming
+  // from handleMethodCall.
+  //
+  // It is a `broadcast` because multiple controllers will connect to
+  // different stream views of this Controller.
+  final _eventStreamController = StreamController<AirPlayEvent>.broadcast();
+
+  // Returns a filtered view of the events in the _controller, by id.
+  Stream<AirPlayEvent> _events(int id) =>
+      _eventStreamController.stream.where((event) => event.id == id);
 
   @override
   Future<void> init(int id) {
@@ -25,9 +39,6 @@ class MethodChannelAirPlay extends AirPlayPlatform {
     }
     return channel.invokeMethod<void>('airPlay#wait');
   }
-
-  Stream<AirPlayEvent> _events(int id) =>
-      _eventStreamController.stream.where((event) => event.id == id);
 
   @override
   Stream<RoutesOpeningEvent> onRoutesOpening({@required int id}) {
