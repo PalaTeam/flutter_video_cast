@@ -5,7 +5,6 @@ import android.view.ContextThemeWrapper
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.gms.cast.MediaInfo
 import com.google.android.gms.cast.MediaLoadOptions
-import com.google.android.gms.cast.MediaSeekOptions
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.Session
@@ -59,10 +58,7 @@ class ChromeCastController(
             if (relative) {
                 interval = interval?.plus(sessionManager?.currentCastSession?.remoteMediaClient?.mediaStatus?.streamPosition ?: 0)
             }
-            val seekOptions = MediaSeekOptions.Builder()
-                    .setPosition(interval?.toLong() ?: 0)
-                    .build()
-            val request = sessionManager?.currentCastSession?.remoteMediaClient?.seek(seekOptions)
+            val request = sessionManager?.currentCastSession?.remoteMediaClient?.seek(interval?.toLong() ?: 0)
             request?.addStatusListener(this)
         }
     }
