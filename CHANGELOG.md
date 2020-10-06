@@ -9,3 +9,7 @@
 ## 1.0.2
 
 * Fix dependencies
+
+## 1.0.3
+
+* Fix activity implementations
