@@ -20,73 +20,73 @@ abstract class ChromeCastPlatform {
   }
 
   /// Add listener for receive callbacks.
-  Future<void> addSessionListener({@required int id}) {
+  Future<void> addSessionListener({required int id}) {
     throw UnimplementedError('addSessionListener() has not been implemented.');
   }
 
   /// Remove listener for receive callbacks.
-  Future<void> removeSessionListener({@required int id}) {
+  Future<void> removeSessionListener({required int id}) {
     throw UnimplementedError(
         'removeSessionListener() has not been implemented.');
   }
 
   /// A session is started.
-  Stream<SessionStartedEvent> onSessionStarted({@required int id}) {
+  Stream<SessionStartedEvent> onSessionStarted({required int id}) {
     throw UnimplementedError('onSessionStarted() has not been implemented.');
   }
 
   /// A session is ended.
-  Stream<SessionEndedEvent> onSessionEnded({@required int id}) {
+  Stream<SessionEndedEvent> onSessionEnded({required int id}) {
     throw UnimplementedError('onSessionEnded() has not been implemented.');
   }
 
   /// A request has completed.
-  Stream<RequestDidCompleteEvent> onRequestCompleted({@required int id}) {
+  Stream<RequestDidCompleteEvent> onRequestCompleted({required int id}) {
     throw UnimplementedError('onRequestCompleted() has not been implemented.');
   }
 
   /// A request has failed.
-  Stream<RequestDidFailEvent> onRequestFailed({@required int id}) {
+  Stream<RequestDidFailEvent> onRequestFailed({required int id}) {
     throw UnimplementedError('onSessionEnded() has not been implemented.');
   }
 
   /// Load a new media by providing an [url].
   Future<void> loadMedia(
     String url, {
-    @required int id,
+    required int id,
   }) {
     throw UnimplementedError('loadMedia() has not been implemented.');
   }
 
   /// Plays the video playback.
-  Future<void> play({@required int id}) {
+  Future<void> play({required int id}) {
     throw UnimplementedError('play() has not been implemented.');
   }
 
   /// Pauses the video playback.
-  Future<void> pause({@required int id}) {
+  Future<void> pause({required int id}) {
     throw UnimplementedError('pause() has not been implemented.');
   }
 
   /// If [relative] is set to false sets the video position to an [interval] from the start.
   ///
   /// If [relative] is set to true sets the video position to an [interval] from the current position.
-  Future<void> seek(bool relative, double interval, {@required int id}) {
+  Future<void> seek(bool relative, double interval, {required int id}) {
     throw UnimplementedError('pause() has not been implemented.');
   }
 
   /// Stop the current video.
-  Future<void> stop({@required int id}) {
+  Future<void> stop({required int id}) {
     throw UnimplementedError('stop() has not been implemented.');
   }
 
   /// Returns `true` when a cast session is connected, `false` otherwise.
-  Future<bool> isConnected({@required int id}) {
+  Future<bool> isConnected({required int id}) {
     throw UnimplementedError('seek() has not been implemented.');
   }
 
   /// Returns `true` when a cast session is playing, `false` otherwise.
-  Future<bool> isPlaying({@required int id}) {
+  Future<bool> isPlaying({required int id}) {
     throw UnimplementedError('isPlaying() has not been implemented.');
   }
 

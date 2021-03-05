@@ -7,11 +7,10 @@ class ChromeCastController {
   /// The id for this controller
   final int id;
 
-  ChromeCastController._({@required this.id});
+  ChromeCastController._({required this.id});
 
   /// Initialize control of a [ChromeCastButton] with [id].
   static Future<ChromeCastController> init(int id) async {
-    assert(id != null);
     await _chromeCastPlatform.init(id);
     return ChromeCastController._(id: id);
   }

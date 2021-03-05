@@ -1,7 +1,6 @@
 /// Generic Event coming from the native side.
 ///
-/// All AirPlayEvents contain the `id` that originated the event. This should
-/// never be `null`.
+/// All AirPlayEvents contain the `id` that originated the event.
 class AirPlayEvent {
   /// The ID of the button this event is associated to.
   final int id;

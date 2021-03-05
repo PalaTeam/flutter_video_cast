@@ -9,39 +9,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: CastSample()
+      home: CastSample(),
     );
   }
 }
 
 class CastSample extends StatefulWidget {
-  static const _iconSize = 50.0;
-
   @override
   _CastSampleState createState() => _CastSampleState();
 }
 
 class _CastSampleState extends State<CastSample> {
-  ChromeCastController _controller;
-  AppState _state = AppState.idle;
-  bool _playing = false;
+  late ChromeCastController _controller;
+  var _state = AppState.idle;
+  var _playing = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Plugin example app'),
-        actions: <Widget>[
+        title: Text('Cast example app'),
+        actions: [
           AirPlayButton(
-            size: CastSample._iconSize,
-            color: Colors.white,
-            activeColor: Colors.amber,
             onRoutesOpening: () => print('opening'),
             onRoutesClosed: () => print('closed'),
           ),
           ChromeCastButton(
-            size: CastSample._iconSize,
-            color: Colors.white,
             onButtonCreated: _onButtonCreated,
             onSessionStarted: _onSessionStarted,
             onSessionEnded: () => setState(() => _state = AppState.idle),
@@ -55,7 +48,7 @@ class _CastSampleState extends State<CastSample> {
   }
 
   Widget _handleState() {
-    switch(_state) {
+    switch (_state) {
       case AppState.idle:
         return Text('ChromeCast not connected');
       case AppState.connected:
@@ -71,34 +64,22 @@ class _CastSampleState extends State<CastSample> {
 
   Widget _mediaControls() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
         _RoundIconButton(
           icon: Icons.replay_10,
           onPressed: () => _controller.seek(relative: true, interval: -10.0),
         ),
         _RoundIconButton(
-            icon: _playing
-                ? Icons.pause
-                : Icons.play_arrow,
-            onPressed: _playPause
+          icon: _playing ? Icons.pause : Icons.play_arrow,
+          onPressed: _playPause,
         ),
         _RoundIconButton(
           icon: Icons.forward_10,
           onPressed: () => _controller.seek(relative: true, interval: 10.0),
-        )
+        ),
       ],
     );
-  }
-
-  Future<void> _playPause() async {
-    final playing = await _controller.isPlaying();
-    if(playing) {
-      await _controller.pause();
-    } else {
-      await _controller.play();
-    }
-    setState(() => _playing = !playing);
   }
 
   Future<void> _onButtonCreated(ChromeCastController controller) async {
@@ -119,9 +100,19 @@ class _CastSampleState extends State<CastSample> {
     });
   }
 
-  Future<void> _onRequestFailed(String error) async {
+  Future<void> _onRequestFailed(String? error) async {
     setState(() => _state = AppState.error);
     print(error);
+  }
+
+  Future<void> _playPause() async {
+    final playing = await _controller.isPlaying();
+    if (playing) {
+      await _controller.pause();
+    } else {
+      await _controller.play();
+    }
+    setState(() => _playing = !playing);
   }
 }
 
@@ -130,21 +121,22 @@ class _RoundIconButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   _RoundIconButton({
-    @required this.icon,
-    @required this.onPressed
+    required this.icon,
+    required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-        child: Icon(
-            icon,
-            color: Colors.white
-        ),
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        child: Icon(icon, color: Colors.white),
         padding: EdgeInsets.all(16.0),
-        color: Colors.blue,
-        shape: CircleBorder(),
-        onPressed: onPressed
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          shape: BoxShape.circle,
+        ),
+      ),
     );
   }
 }
@@ -153,5 +145,5 @@ enum AppState {
   idle,
   connected,
   mediaLoaded,
-  error
+  error,
 }

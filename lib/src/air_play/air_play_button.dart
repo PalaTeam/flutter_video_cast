@@ -5,46 +5,49 @@ final AirPlayPlatform _airPlayPlatform = AirPlayPlatform.instance;
 /// Widget that displays the AirPlay button.
 class AirPlayButton extends StatelessWidget {
   /// Creates a widget displaying a AirPlay button.
-  AirPlayButton({
-    Key key,
-    this.size = 30.0,
-    this.color = Colors.black,
-    this.activeColor = Colors.white,
+  const AirPlayButton({
+    Key? key,
+    this.size,
+    this.color,
+    this.activeColor,
     this.onRoutesOpening,
     this.onRoutesClosed,
   }) : super(key: key);
 
   /// The size of the button.
-  final double size;
+  final double? size;
 
   /// The color of the button.
-  final Color color;
+  final Color? color;
 
   /// The color of the button when connected.
-  final Color activeColor;
+  final Color? activeColor;
 
   /// Called while the AirPlay popup is opening.
-  final VoidCallback onRoutesOpening;
+  final VoidCallback? onRoutesOpening;
 
   /// Called when the AirPlay popup has closed.
-  final VoidCallback onRoutesClosed;
+  final VoidCallback? onRoutesClosed;
 
   @override
   Widget build(BuildContext context) {
+    final defaultColor = color ?? IconTheme.of(context).color;
+    final activeDefaultColor = color ?? IconTheme.of(context).color;
     final Map<String, dynamic> args = {
-      'red': color.red,
-      'green': color.green,
-      'blue': color.blue,
-      'alpha': color.alpha,
-      'activeRed': activeColor.red,
-      'activeGreen': activeColor.green,
-      'activeBlue': activeColor.blue,
-      'activeAlpha': activeColor.alpha,
+      'red': defaultColor?.red,
+      'green': defaultColor?.green,
+      'blue': defaultColor?.blue,
+      'alpha': defaultColor?.alpha,
+      'activeRed': activeDefaultColor?.red,
+      'activeGreen': activeDefaultColor?.green,
+      'activeBlue': activeDefaultColor?.blue,
+      'activeAlpha': activeDefaultColor?.alpha,
     };
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
+    if (Platform.isIOS) {
+      final iconSize = size ?? IconTheme.of(context).size;
       return SizedBox(
-        width: size,
-        height: size,
+        width: iconSize,
+        height: iconSize,
         child: _airPlayPlatform.buildView(args, _onPlatformViewCreated),
       );
     }
@@ -53,13 +56,7 @@ class AirPlayButton extends StatelessWidget {
 
   Future<void> _onPlatformViewCreated(int id) async {
     await _airPlayPlatform.init(id);
-    if (onRoutesOpening != null) {
-      _airPlayPlatform.onRoutesOpening(id: id).listen((_) => onRoutesOpening());
-    }
-    if (onRoutesClosed != null) {
-      _airPlayPlatform
-          .onRoutesClosed(id: id)
-          .listen((event) => onRoutesClosed());
-    }
+    _airPlayPlatform.onRoutesOpening(id: id).listen((_) => onRoutesOpening?.call());
+    _airPlayPlatform.onRoutesClosed(id: id).listen((event) => onRoutesClosed?.call());
   }
 }

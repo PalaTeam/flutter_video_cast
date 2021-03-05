@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_video_cast/src/air_play/air_play_event.dart';
@@ -11,10 +10,10 @@ import 'package:stream_transform/stream_transform.dart';
 class MethodChannelAirPlay extends AirPlayPlatform {
   // Keep a collection of id -> channel
   // Every method call passes the int id
-  final Map<int, MethodChannel> _channels = {};
+  final Map<int, MethodChannel?> _channels = {};
 
   /// Accesses the MethodChannel associated to the passed id.
-  MethodChannel channel(int id) {
+  MethodChannel? channel(int id) {
     return _channels[id];
   }
 
@@ -26,27 +25,26 @@ class MethodChannelAirPlay extends AirPlayPlatform {
   final _eventStreamController = StreamController<AirPlayEvent>.broadcast();
 
   // Returns a filtered view of the events in the _controller, by id.
-  Stream<AirPlayEvent> _events(int id) =>
-      _eventStreamController.stream.where((event) => event.id == id);
+  Stream<AirPlayEvent> _events(int id) => _eventStreamController.stream.where((event) => event.id == id);
 
   @override
-  Future<void> init(int id) {
-    MethodChannel channel;
+  Future<void> init(int id) async {
+    MethodChannel? channel;
     if (!_channels.containsKey(id)) {
       channel = MethodChannel('flutter_video_cast/airPlay_$id');
       channel.setMethodCallHandler((call) => _handleMethodCall(call, id));
       _channels[id] = channel;
     }
-    return channel.invokeMethod<void>('airPlay#wait');
+    await channel?.invokeMethod<void>('airPlay#wait');
   }
 
   @override
-  Stream<RoutesOpeningEvent> onRoutesOpening({@required int id}) {
+  Stream<RoutesOpeningEvent> onRoutesOpening({required int id}) {
     return _events(id).whereType<RoutesOpeningEvent>();
   }
 
   @override
-  Stream<RoutesClosedEvent> onRoutesClosed({@required int id}) {
+  Stream<RoutesClosedEvent> onRoutesClosed({required int id}) {
     return _events(id).whereType<RoutesClosedEvent>();
   }
 
@@ -64,16 +62,12 @@ class MethodChannelAirPlay extends AirPlayPlatform {
   }
 
   @override
-  Widget buildView(Map<String, dynamic> arguments,
-      PlatformViewCreatedCallback onPlatformViewCreated) {
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      return UiKitView(
-        viewType: 'AirPlayButton',
-        onPlatformViewCreated: onPlatformViewCreated,
-        creationParams: arguments,
-        creationParamsCodec: const StandardMessageCodec(),
-      );
-    }
-    return SizedBox();
+  Widget buildView(Map<String, dynamic> arguments, PlatformViewCreatedCallback onPlatformViewCreated) {
+    return UiKitView(
+      viewType: 'AirPlayButton',
+      onPlatformViewCreated: onPlatformViewCreated,
+      creationParams: arguments,
+      creationParamsCodec: const StandardMessageCodec(),
+    );
   }
 }
