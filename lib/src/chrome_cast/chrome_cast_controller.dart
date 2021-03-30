@@ -62,12 +62,13 @@ class ChromeCastController {
     return _chromeCastPlatform.isPlaying(id: id);
   }
 
-  ///
-  Future<dynamic?> position() {
+  /// Returns current position.
+  Future<Duration?> position() {
     return _chromeCastPlatform.position(id: id);
   }
 
-  Future<dynamic?> duration() {
+  /// Returns video duration.
+  Future<Duration?> duration() {
     return _chromeCastPlatform.duration(id: id);
   }
 }
