@@ -7,11 +7,10 @@ class ChromeCastController {
   /// The id for this controller
   final int id;
 
-  ChromeCastController._({@required this.id});
+  ChromeCastController._({required this.id});
 
   /// Initialize control of a [ChromeCastButton] with [id].
   static Future<ChromeCastController> init(int id) async {
-    assert(id != null);
     await _chromeCastPlatform.init(id);
     return ChromeCastController._(id: id);
   }
@@ -54,12 +53,21 @@ class ChromeCastController {
   }
 
   /// Returns `true` when a cast session is connected, `false` otherwise.
-  Future<bool> isConnected() {
+  Future<bool?> isConnected() {
     return _chromeCastPlatform.isConnected(id: id);
   }
 
   /// Returns `true` when a cast session is playing, `false` otherwise.
-  Future<bool> isPlaying() {
+  Future<bool?> isPlaying() {
     return _chromeCastPlatform.isPlaying(id: id);
+  }
+
+  ///
+  Future<dynamic?> position() {
+    return _chromeCastPlatform.position(id: id);
+  }
+
+  Future<dynamic?> duration() {
+    return _chromeCastPlatform.duration(id: id);
   }
 }

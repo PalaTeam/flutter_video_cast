@@ -6,7 +6,7 @@ final AirPlayPlatform _airPlayPlatform = AirPlayPlatform.instance;
 class AirPlayButton extends StatelessWidget {
   /// Creates a widget displaying a AirPlay button.
   AirPlayButton({
-    Key key,
+    Key? key,
     this.size = 30.0,
     this.color = Colors.black,
     this.activeColor = Colors.white,
@@ -24,10 +24,10 @@ class AirPlayButton extends StatelessWidget {
   final Color activeColor;
 
   /// Called while the AirPlay popup is opening.
-  final VoidCallback onRoutesOpening;
+  final VoidCallback? onRoutesOpening;
 
   /// Called when the AirPlay popup has closed.
-  final VoidCallback onRoutesClosed;
+  final VoidCallback? onRoutesClosed;
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,12 @@ class AirPlayButton extends StatelessWidget {
   Future<void> _onPlatformViewCreated(int id) async {
     await _airPlayPlatform.init(id);
     if (onRoutesOpening != null) {
-      _airPlayPlatform.onRoutesOpening(id: id).listen((_) => onRoutesOpening());
+      _airPlayPlatform.onRoutesOpening(id: id).listen((_) => onRoutesOpening!());
     }
     if (onRoutesClosed != null) {
       _airPlayPlatform
           .onRoutesClosed(id: id)
-          .listen((event) => onRoutesClosed());
+          .listen((event) => onRoutesClosed!());
     }
   }
 }
