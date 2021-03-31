@@ -63,6 +63,16 @@ class ChromeCastController(
         }
     }
 
+    private fun setVolume(args: Any?) {
+        if (args is Map<*, *>) {
+            val volume = args["volume"] as? Double
+            val request = sessionManager?.currentCastSession?.remoteMediaClient?.setStreamVolume(volume ?: 0.0)
+            request?.addStatusListener(this)
+        }
+    }
+
+    private fun getVolume() = sessionManager?.currentCastSession?.volume ?: 0.0
+
     private fun stop() {
         val request = sessionManager?.currentCastSession?.remoteMediaClient?.stop()
         request?.addStatusListener(this)
@@ -72,7 +82,7 @@ class ChromeCastController(
 
     private fun isConnected() = sessionManager?.currentCastSession?.isConnected ?: false
 
-    private fun position() = sessionManager?.currentCastSession?.remoteMediaClient?.mediaStatus?.streamPosition ?: 0
+    private fun position() = sessionManager?.currentCastSession?.remoteMediaClient?.approximateStreamPosition ?: 0
 
     private fun duration() = sessionManager?.currentCastSession?.remoteMediaClient?.mediaInfo?.streamDuration ?: 0
 
@@ -111,6 +121,11 @@ class ChromeCastController(
                 seek(call.arguments)
                 result.success(null)
             }
+            "chromeCast#setVolume" -> {
+                setVolume(call.arguments)
+                result.success(null)
+            }
+            "chromeCast#getVolume" -> result.success(getVolume())
             "chromeCast#stop" -> {
                 stop()
                 result.success(null)

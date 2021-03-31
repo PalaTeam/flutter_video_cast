@@ -75,6 +75,16 @@ abstract class ChromeCastPlatform {
     throw UnimplementedError('pause() has not been implemented.');
   }
 
+  /// Set volume
+  Future<void> setVolume(double volume, {required int id}) {
+    throw UnimplementedError('setVolume() has not been implemented.');
+  }
+
+  /// Get volume
+  Future<double> getVolume({required int id}) {
+    throw UnimplementedError('getVolume() has not been implemented.');
+  }
+
   /// Stop the current video.
   Future<void> stop({required int id}) {
     throw UnimplementedError('stop() has not been implemented.');
@@ -90,11 +100,11 @@ abstract class ChromeCastPlatform {
     throw UnimplementedError('isPlaying() has not been implemented.');
   }
 
-  Future<Duration?> position({required int id}) {
+  Future<Duration> position({required int id}) {
     throw UnimplementedError('position() has not been implemented.');
   }
 
-  Future<Duration?> duration({required int id}) {
+  Future<Duration> duration({required int id}) {
     throw UnimplementedError('duration() has not been implemented.');
   }
 

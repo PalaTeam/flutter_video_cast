@@ -47,6 +47,16 @@ class ChromeCastController {
     return _chromeCastPlatform.seek(relative, interval, id: id);
   }
 
+  /// Set volume 0-1
+  Future<void> setVolume({double volume = 0}) {
+    return _chromeCastPlatform.setVolume(volume, id: id);
+  }
+
+  /// Get current volume
+  Future<double> getVolume() {
+    return _chromeCastPlatform.getVolume(id: id);
+  }
+
   /// Stop the current video.
   Future<void> stop() {
     return _chromeCastPlatform.stop(id: id);
@@ -63,12 +73,12 @@ class ChromeCastController {
   }
 
   /// Returns current position.
-  Future<Duration?> position() {
+  Future<Duration> position() {
     return _chromeCastPlatform.position(id: id);
   }
 
   /// Returns video duration.
-  Future<Duration?> duration() {
+  Future<Duration> duration() {
     return _chromeCastPlatform.duration(id: id);
   }
 }

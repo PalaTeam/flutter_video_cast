@@ -96,6 +96,18 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
   }
 
   @override
+  Future<void> setVolume(double volume, {required int id}) {
+    final Map<String, dynamic> args = {'volume': volume};
+    return channel(id)!.invokeMethod<void>('chromeCast#setVolume', args);
+  }
+
+  @override
+  Future<double> getVolume({required int id}) async {
+    return (await channel(id)!.invokeMethod<double>('chromeCast#getVolume')) ??
+        0;
+  }
+
+  @override
   Future<void> stop({int? id}) {
     return channel(id)!.invokeMethod<void>('chromeCast#stop');
   }
@@ -111,16 +123,18 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
   }
 
   @override
-  Future<Duration?> position({required int id}) async {
+  Future<Duration> position({required int id}) async {
     return Duration(
-      milliseconds: (await channel(id)!.invokeMethod<int>('chromeCast#position')) ?? 0,
+      milliseconds:
+          (await channel(id)!.invokeMethod<int>('chromeCast#position')) ?? 0,
     );
   }
 
   @override
-  Future<Duration?> duration({required int id}) async {
+  Future<Duration> duration({required int id}) async {
     return Duration(
-      milliseconds: (await channel(id)!.invokeMethod<int>('chromeCast#duration')) ?? 0,
+      milliseconds:
+          (await channel(id)!.invokeMethod<int>('chromeCast#duration')) ?? 0,
     );
   }
 
