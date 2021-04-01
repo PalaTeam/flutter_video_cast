@@ -106,10 +106,13 @@ class _CastSampleState extends State<CastSample> {
           },
         ),
         Text(_time()),
+        /*
+        //End session
         _RoundIconButton(
           icon: Icons.stop,
           onPressed: () => _controller.endSession(),
         ),
+         */
       ],
     );
   }
