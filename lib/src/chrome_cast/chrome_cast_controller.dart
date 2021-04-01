@@ -67,6 +67,11 @@ class ChromeCastController {
     return _chromeCastPlatform.isConnected(id: id);
   }
 
+  /// End current session
+  Future<void> endSession() {
+    return _chromeCastPlatform.endSession(id: id);
+  }
+
   /// Returns `true` when a cast session is playing, `false` otherwise.
   Future<bool?> isPlaying() {
     return _chromeCastPlatform.isPlaying(id: id);

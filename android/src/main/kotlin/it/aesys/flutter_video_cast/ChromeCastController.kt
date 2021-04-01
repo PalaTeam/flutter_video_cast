@@ -82,6 +82,8 @@ class ChromeCastController(
 
     private fun isConnected() = sessionManager?.currentCastSession?.isConnected ?: false
 
+    private fun endSession() = sessionManager?.endCurrentSession(true)
+
     private fun position() = sessionManager?.currentCastSession?.remoteMediaClient?.approximateStreamPosition ?: 0
 
     private fun duration() = sessionManager?.currentCastSession?.remoteMediaClient?.mediaInfo?.streamDuration ?: 0
@@ -132,6 +134,10 @@ class ChromeCastController(
             }
             "chromeCast#isPlaying" -> result.success(isPlaying())
             "chromeCast#isConnected" -> result.success(isConnected())
+            "chromeCast#endSession" -> {
+                endSession()
+                result.success(null)
+            }
             "chromeCast#position" -> result.success(position())
             "chromeCast#duration" -> result.success(duration())
             "chromeCast#addSessionListener" -> {

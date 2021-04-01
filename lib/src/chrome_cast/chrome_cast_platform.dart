@@ -95,6 +95,12 @@ abstract class ChromeCastPlatform {
     throw UnimplementedError('seek() has not been implemented.');
   }
 
+  /// End current session
+  Future<void> endSession({required int id}) {
+    throw UnimplementedError('seek() has not been implemented.');
+  }
+
+
   /// Returns `true` when a cast session is playing, `false` otherwise.
   Future<bool?> isPlaying({required int id}) {
     throw UnimplementedError('isPlaying() has not been implemented.');

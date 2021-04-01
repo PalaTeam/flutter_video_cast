@@ -118,6 +118,11 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
   }
 
   @override
+  Future<void> endSession({required int id}) {
+    return channel(id)!.invokeMethod<void>('chromeCast#endSession');
+  }
+
+  @override
   Future<bool?> isPlaying({required int id}) {
     return channel(id)!.invokeMethod<bool>('chromeCast#isPlaying');
   }
