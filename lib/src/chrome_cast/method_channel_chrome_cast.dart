@@ -71,8 +71,10 @@ class MethodChannelChromeCast extends ChromeCastPlatform {
   }
 
   @override
-  Future<void> loadMedia(String url, {@required int id}) {
+  Future<void> loadMedia(String url, Map<String, dynamic> meta, {@required int id}) {
     final Map<String, dynamic> args = {'url': url};
+    args.addAll(meta);
+    
     return channel(id).invokeMethod<void>('chromeCast#loadMedia', args);
   }
 
