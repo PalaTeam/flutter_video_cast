@@ -37,10 +37,12 @@ class ChromeCastController(
         if (args is Map<*, *>) {
             val url = args["url"] as? String
 
-            val meta = MediaMetadata(MediaMetadata.MEDIA_TYPE_MUSIC_TRACK)
+            val meta = MediaMetadata(MediaMetadata.MEDIA_TYPE_GENERIC)
             meta.putString(MediaMetadata.KEY_TITLE, args["title"] as? String)
             meta.putString(MediaMetadata.KEY_ARTIST, args["artist"] as? String)
-            meta.addImage(WebImage(Uri.parse(args["image-url"] as? String)))
+            (args["image-url"] as? String).let{imageUrl ->
+                meta.addImage(WebImage(Uri.parse(imageUrl)))
+            }
 
             val media = MediaInfo.Builder(url).setMetadata(meta).build()
             val options = MediaLoadOptions.Builder().build()
