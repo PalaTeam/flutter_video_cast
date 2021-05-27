@@ -176,7 +176,7 @@ class ChromeCastController: NSObject, FlutterPlatformView {
     }
 
     private func position(){
-        return Double(sessionManager.currentCastSession?.remoteMediaClient?.approximateStreamPosition) ?? 0
+        return Int(sessionManager.currentCastSession?.remoteMediaClient?.approximateStreamPosition ?? 0)
         // return Double(sessionManager.currentSession?.remoteMediaClient?.mediaStatus?.streamPosition)
     }
 
