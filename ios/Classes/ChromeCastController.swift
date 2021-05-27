@@ -104,7 +104,7 @@ class ChromeCastController: NSObject, FlutterPlatformView {
         case "chromeCast#removeSessionListener":
             removeSessionListener()
             result(nil)
-        case "chromeCast#removeSessionListener":
+        case "chromeCast#position":
             result(position())
         default:
             result(nil)
@@ -175,9 +175,8 @@ class ChromeCastController: NSObject, FlutterPlatformView {
         sessionManager.remove(self)
     }
 
-    private func position() -> Int {
-        return Int(sessionManager.currentCastSession?.remoteMediaClient?.approximateStreamPosition() ?? 0)
-        // return Double(sessionManager.currentSession?.remoteMediaClient?.mediaStatus?.streamPosition)
+    private func position() -> Int {        
+        return Int(sessionManager.currentCastSession?.remoteMediaClient?.approximateStreamPosition() ?? 0) * 1000
     }
 
 }
