@@ -50,12 +50,21 @@ class MethodChannelAirPlay extends AirPlayPlatform {
     return _events(id).whereType<RoutesClosedEvent>();
   }
 
+  @override
+  Stream<AirplayStateChangedEvent> isAirplayConnected({required int id}) {
+    return _events(id).whereType<AirplayStateChangedEvent>();
+  }
+
   Future<dynamic> _handleMethodCall(MethodCall call, int id) async {
     switch (call.method) {
       case 'airPlay#onRoutesOpening':
         _eventStreamController.add(RoutesOpeningEvent(id));
         break;
       case 'airPlay#onRoutesClosed':
+        Future.delayed(Duration(seconds: 1)).then((value) => _channels[id]!
+            .invokeMethod<bool>("airPlay#isConnected")
+            .then((value) => _eventStreamController
+                .add(AirplayStateChangedEvent(id, value ?? false))));
         _eventStreamController.add(RoutesClosedEvent(id));
         break;
       default:

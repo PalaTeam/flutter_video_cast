@@ -34,4 +34,8 @@ abstract class AirPlayPlatform {
       PlatformViewCreatedCallback onPlatformViewCreated) {
     throw UnimplementedError('buildView() has not been implemented.');
   }
+
+  Stream<AirplayStateChangedEvent> isAirplayConnected({required int id}) {
+    throw UnimplementedError("isAirplayConnect() has not been implemented");
+  }
 }
