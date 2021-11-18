@@ -106,6 +106,9 @@ class ChromeCastController: NSObject, FlutterPlatformView {
             result(nil)
         case "chromeCast#position":
             result(position())
+        case "chromeCast#endSession":
+            endSession();
+            result(nil)
         default:
             result(nil)
             break
@@ -177,6 +180,10 @@ class ChromeCastController: NSObject, FlutterPlatformView {
 
     private func position() -> Int {        
         return Int(sessionManager.currentCastSession?.remoteMediaClient?.approximateStreamPosition() ?? 0) * 1000
+    }
+
+    private func endSession() {
+        sessionManager.endSession()
     }
 
 }
