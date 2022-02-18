@@ -108,7 +108,13 @@ class _CastSampleState extends State<CastSample> {
 
   Future<void> _onSessionStarted() async {
     setState(() => _state = AppState.connected);
-    await _controller.loadMedia('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
+    await _controller.loadMedia(
+        'http://media.emit.com/pbs/tomorrow-land/202104091300/aac_mid.m4a', {
+      "title": "Tomorrowland",
+      "artist": "Edd Fisher",
+      "image-url":
+          "https://www.pbsfm.org.au/sites/default/files/styles/program_thumbnail/public/program/tomorrowland.jpg"
+    });
   }
 
   Future<void> _onRequestCompleted() async {
