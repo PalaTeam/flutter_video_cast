@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_video_cast/flutter_video_cast.dart';
+import 'package:flutter_video_cast_example/timer.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,9 +11,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: CastSample()
-    );
+    return MaterialApp(home: CastSample());
   }
 }
 
@@ -22,9 +23,17 @@ class CastSample extends StatefulWidget {
 }
 
 class _CastSampleState extends State<CastSample> {
-  ChromeCastController _controller;
+  late ChromeCastController _controller;
   AppState _state = AppState.idle;
-  bool _playing = false;
+  bool? _playing = false;
+
+  Duration position = Duration();
+  Duration duration = Duration();
+
+  double volume = 0;
+
+  Timer _timer = Timer();
+  StreamSubscription<int>? _tickerSubscription;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +53,7 @@ class _CastSampleState extends State<CastSample> {
             color: Colors.white,
             onButtonCreated: _onButtonCreated,
             onSessionStarted: _onSessionStarted,
-            onSessionEnded: () => setState(() => _state = AppState.idle),
+            onSessionEnded: _onSessionEnded,
             onRequestCompleted: _onRequestCompleted,
             onRequestFailed: _onRequestFailed,
           ),
@@ -55,7 +64,7 @@ class _CastSampleState extends State<CastSample> {
   }
 
   Widget _handleState() {
-    switch(_state) {
+    switch (_state) {
       case AppState.idle:
         return Text('ChromeCast not connected');
       case AppState.connected:
@@ -70,33 +79,89 @@ class _CastSampleState extends State<CastSample> {
   }
 
   Widget _mediaControls() {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        _RoundIconButton(
-          icon: Icons.replay_10,
-          onPressed: () => _controller.seek(relative: true, interval: -10.0),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _RoundIconButton(
+              icon: Icons.replay_10,
+              onPressed: () =>
+                  _controller.seek(relative: true, interval: -10.0),
+            ),
+            _RoundIconButton(
+                icon: _playing! ? Icons.pause : Icons.play_arrow,
+                onPressed: _playPause),
+            _RoundIconButton(
+              icon: Icons.forward_10,
+              onPressed: () => _controller.seek(relative: true, interval: 10.0),
+            ),
+          ],
         ),
-        _RoundIconButton(
-            icon: _playing
-                ? Icons.pause
-                : Icons.play_arrow,
-            onPressed: _playPause
+        Slider(
+          value: _sliderValue(),
+          onChanged: (double value) {
+            _changeSliderValue(value);
+          },
         ),
+        Text(_time()),
+        /*
+        //End session
         _RoundIconButton(
-          icon: Icons.forward_10,
-          onPressed: () => _controller.seek(relative: true, interval: 10.0),
-        )
+          icon: Icons.stop,
+          onPressed: () => _controller.endSession(),
+        ),
+         */
       ],
     );
   }
 
+  String _time() {
+    if (duration.inHours > 0) {
+      return "${formatHour(position)} / ${formatHour(duration)}";
+    } else {
+      return "${format(position)} / ${format(duration)}";
+    }
+  }
+
+  format(Duration d) => d.toString().substring(2, 7);
+  formatHour(Duration d) => d.toString().split('.').first.padLeft(8, "0");
+
+  double _sliderValue() {
+    return position.inSeconds /
+        (duration.inSeconds == 0 ? 5 : duration.inSeconds);
+  }
+
+  _changeSliderValue(double value) {
+    position = Duration(
+      seconds:
+          ((duration.inSeconds == 0 ? 5 : duration.inSeconds) * value).toInt(),
+    );
+    _changePosition(position);
+    setState(() {});
+  }
+
+  _changePosition(Duration position) async {
+    if ((await _controller.isConnected()) ?? false) {
+      await _controller.seek(interval: position.inSeconds.toDouble());
+      position = await _controller.position();
+      setState(() {});
+    }
+  }
+
   Future<void> _playPause() async {
-    final playing = await _controller.isPlaying();
-    if(playing) {
+    final bool playing = (await _controller.isPlaying()) ?? false;
+    if (playing) {
       await _controller.pause();
+      _tickerSubscription?.cancel();
     } else {
       await _controller.play();
+      _tickerSubscription?.cancel();
+      _tickerSubscription = _timer.tick(ticks: 0).listen((time) async {
+        position = await _controller.position();
+        setState(() {});
+      });
     }
     setState(() => _playing = !playing);
   }
@@ -108,7 +173,16 @@ class _CastSampleState extends State<CastSample> {
 
   Future<void> _onSessionStarted() async {
     setState(() => _state = AppState.connected);
-    await _controller.loadMedia('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
+    await _controller.loadMedia(
+      'http://demo.unified-streaming.com/video/tears-of-steel/tears-of-steel.ism/.m3u8',
+    );
+  }
+
+  Future<void> _onSessionEnded() async {
+    _tickerSubscription?.cancel();
+    position = Duration();
+    duration = Duration();
+    setState(() => _state = AppState.idle);
   }
 
   Future<void> _onRequestCompleted() async {
@@ -117,9 +191,12 @@ class _CastSampleState extends State<CastSample> {
       _state = AppState.mediaLoaded;
       _playing = playing;
     });
+    duration = await _controller.duration();
+    setState(() {});
   }
 
-  Future<void> _onRequestFailed(String error) async {
+  Future<void> _onRequestFailed(String? error) async {
+    _tickerSubscription?.cancel();
     setState(() => _state = AppState.error);
     print(error);
   }
@@ -129,29 +206,21 @@ class _RoundIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onPressed;
 
-  _RoundIconButton({
-    @required this.icon,
-    @required this.onPressed
-  });
+  _RoundIconButton({required this.icon, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-        child: Icon(
-            icon,
-            color: Colors.white
+    return ElevatedButton(
+        child: Icon(icon, color: Colors.white),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+          shape: MaterialStateProperty.all<OutlinedBorder>(CircleBorder()),
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            EdgeInsets.all(16.0),
+          ),
         ),
-        padding: EdgeInsets.all(16.0),
-        color: Colors.blue,
-        shape: CircleBorder(),
-        onPressed: onPressed
-    );
+        onPressed: onPressed);
   }
 }
 
-enum AppState {
-  idle,
-  connected,
-  mediaLoaded,
-  error
-}
+enum AppState { idle, connected, mediaLoaded, error }

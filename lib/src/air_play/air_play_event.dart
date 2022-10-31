@@ -23,3 +23,8 @@ class RoutesClosedEvent extends AirPlayEvent {
   /// Build a RoutesClosed Event triggered from the button represented by `id`.
   RoutesClosedEvent(int id) : super(id);
 }
+
+class AirplayStateChangedEvent extends AirPlayEvent {
+  final bool connected;
+  AirplayStateChangedEvent(int id, this.connected) : super(id);
+}

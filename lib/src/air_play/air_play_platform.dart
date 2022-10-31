@@ -20,12 +20,12 @@ abstract class AirPlayPlatform {
   }
 
   /// The route is opening.
-  Stream<RoutesOpeningEvent> onRoutesOpening({@required int id}) {
+  Stream<RoutesOpeningEvent> onRoutesOpening({required int id}) {
     throw UnimplementedError('onRoutesOpening() has not been implemented.');
   }
 
   /// The route has closed.
-  Stream<RoutesClosedEvent> onRoutesClosed({@required int id}) {
+  Stream<RoutesClosedEvent> onRoutesClosed({required int id}) {
     throw UnimplementedError('onRoutesClosed() has not been implemented.');
   }
 
@@ -33,5 +33,9 @@ abstract class AirPlayPlatform {
   Widget buildView(Map<String, dynamic> arguments,
       PlatformViewCreatedCallback onPlatformViewCreated) {
     throw UnimplementedError('buildView() has not been implemented.');
+  }
+
+  Stream<AirplayStateChangedEvent> isAirplayConnected({required int id}) {
+    throw UnimplementedError("isAirplayConnect() has not been implemented");
   }
 }

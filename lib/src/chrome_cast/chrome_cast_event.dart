@@ -33,7 +33,7 @@ class RequestDidCompleteEvent extends ChromeCastEvent {
 /// An event fired when a request of a [id] failed.
 class RequestDidFailEvent extends ChromeCastEvent {
   /// The error message.
-  final String error;
+  final String? error;
 
   /// Build a RequestDidFail Event triggered from the button represented by `id`.
   RequestDidFailEvent(int id, this.error) : super(id);

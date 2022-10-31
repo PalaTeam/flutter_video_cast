@@ -7,11 +7,10 @@ class ChromeCastController {
   /// The id for this controller
   final int id;
 
-  ChromeCastController._({@required this.id});
+  ChromeCastController._({required this.id});
 
   /// Initialize control of a [ChromeCastButton] with [id].
   static Future<ChromeCastController> init(int id) async {
-    assert(id != null);
     await _chromeCastPlatform.init(id);
     return ChromeCastController._(id: id);
   }
@@ -48,18 +47,43 @@ class ChromeCastController {
     return _chromeCastPlatform.seek(relative, interval, id: id);
   }
 
+  /// Set volume 0-1
+  Future<void> setVolume({double volume = 0}) {
+    return _chromeCastPlatform.setVolume(volume, id: id);
+  }
+
+  /// Get current volume
+  Future<double> getVolume() {
+    return _chromeCastPlatform.getVolume(id: id);
+  }
+
   /// Stop the current video.
   Future<void> stop() {
     return _chromeCastPlatform.stop(id: id);
   }
 
   /// Returns `true` when a cast session is connected, `false` otherwise.
-  Future<bool> isConnected() {
+  Future<bool?> isConnected() {
     return _chromeCastPlatform.isConnected(id: id);
   }
 
+  /// End current session
+  Future<void> endSession() {
+    return _chromeCastPlatform.endSession(id: id);
+  }
+
   /// Returns `true` when a cast session is playing, `false` otherwise.
-  Future<bool> isPlaying() {
+  Future<bool?> isPlaying() {
     return _chromeCastPlatform.isPlaying(id: id);
+  }
+
+  /// Returns current position.
+  Future<Duration> position() {
+    return _chromeCastPlatform.position(id: id);
+  }
+
+  /// Returns video duration.
+  Future<Duration> duration() {
+    return _chromeCastPlatform.duration(id: id);
   }
 }
